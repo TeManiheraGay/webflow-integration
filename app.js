@@ -1,3 +1,5 @@
+const parceled = true;
+
 alert("Hello World");
 
 window.onload = function () {
