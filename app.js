@@ -1,7 +1,5 @@
 const parceled = true;
 
-alert("Hello World");
-
 window.onload = function () {
   // Globals
   var random = Math.random,
@@ -244,3 +242,142 @@ window.onload = function () {
 
   poof();
 };
+
+//Calculate the loan repayments
+function calculateMonthlyPayments(event) {
+  event.preventDefault(); // This prevents the form from being submitted
+  const propertyPrice = document.getElementById("propertyPrice").value;
+  const depositAmount = document.getElementById("depositAmount").value;
+  const loanAmount = propertyPrice - depositAmount;
+  const annualInterestRate =
+    document.getElementById("annualInterestRate").value;
+  const loanTermYears = parseFloat(
+    document.getElementById("loanTermYears").value
+  );
+
+  // Validate inputs
+  if (
+    !propertyPrice ||
+    !depositAmount ||
+    !loanAmount ||
+    !annualInterestRate ||
+    !loanTermYears
+  ) {
+    alert("Please fill out all fields before calculating.");
+    return;
+  }
+
+  if (loanAmount < 0) {
+    alert(
+      "Loan amount cannot be negative. Please check the property price and deposit amount."
+    );
+    return;
+  }
+  // Check if the value is valid
+  if (!/^\d+(\.\d{1,2})?$/.test(annualInterestRate)) {
+    alert(
+      "Please enter a valid annual interest rate with up to 2 decimal places."
+    );
+    return;
+  }
+  const monthlyInterestRate = annualInterestRate / 12 / 100;
+  // Check if loan term is a positive number
+  if (isNaN(loanTermYears) || parseFloat(loanTermYears) <= 0) {
+    alert("Please enter a valid loan term in years.");
+    return;
+  }
+  const totalPayments = loanTermYears * 12;
+
+  // Show the dropdown after calculations
+  const dropdownContainer = document.getElementById("calcDropdown");
+  dropdownContainer.style.display = "block";
+
+  // Interest Calculations
+  const interestOnlyMonthlyPayment = loanAmount * monthlyInterestRate;
+  const interestOnlyAnnualPayment = interestOnlyMonthlyPayment * 12;
+  const interestOnlyWeeklyPayment = interestOnlyAnnualPayment / 52;
+  const interestOnlyFortnightPayment = interestOnlyWeeklyPayment * 2;
+
+  //Principal & Interest Calculations
+  const principalAndInterestMonthlyPayment =
+    (loanAmount *
+      (monthlyInterestRate *
+        Math.pow(1 + monthlyInterestRate, totalPayments))) /
+    (Math.pow(1 + monthlyInterestRate, totalPayments) - 1);
+  const principalAndInterestAnnualPayment =
+    principalAndInterestMonthlyPayment * 12;
+  const principalAndInterestWeeklyPayment =
+    principalAndInterestAnnualPayment / 52;
+  const principalAndInterestFortnightPayment =
+    principalAndInterestWeeklyPayment * 2;
+
+  // Display interest calculated figures
+  document.getElementById("interestOnlyMonthly").innerHTML =
+    interestOnlyMonthlyPayment.toLocaleString("en-NZ", {
+      style: "currency",
+      currency: "NZD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  document.getElementById("interestOnlyAnnual").innerHTML =
+    interestOnlyAnnualPayment.toLocaleString("en-NZ", {
+      style: "currency",
+      currency: "NZD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  document.getElementById("interestOnlyWeekly").innerHTML =
+    interestOnlyWeeklyPayment.toLocaleString("en-NZ", {
+      style: "currency",
+      currency: "NZD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  document.getElementById("interestOnlyFortnight").innerHTML =
+    interestOnlyFortnightPayment.toLocaleString("en-NZ", {
+      style: "currency",
+      currency: "NZD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+  // Display principal & interest calculated figures
+  document.getElementById("principalAndInterestMonthly").innerHTML =
+    principalAndInterestMonthlyPayment.toLocaleString("en-NZ", {
+      style: "currency",
+      currency: "NZD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  document.getElementById("principalAndInterestAnnual").innerHTML =
+    principalAndInterestAnnualPayment.toLocaleString("en-NZ", {
+      style: "currency",
+      currency: "NZD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  document.getElementById("principalAndInterestWeekly").innerHTML =
+    principalAndInterestWeeklyPayment.toLocaleString("en-NZ", {
+      style: "currency",
+      currency: "NZD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  document.getElementById("principalAndInterestFortnight").innerHTML =
+    principalAndInterestFortnightPayment.toLocaleString("en-NZ", {
+      style: "currency",
+      currency: "NZD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+  const pricePerWeek = document.getElementById("pricePerWeek");
+  console.log(pricePerWeek);
+  pricePerWeek.style.opacity = "1";
+
+  const pricePerFortnight = document.getElementById("pricePerFortnight");
+  pricePerFortnight.style.opacity = "1";
+
+  const pricePerMonth = document.getElementById("pricePerMonth");
+  pricePerMonth.style.opacity = "1";
+}
